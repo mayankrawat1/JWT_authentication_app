@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const { isEmail } = require("validator");
 
 const userSchema = new mongoose.Schema({
@@ -14,6 +15,14 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please enter the password"],
     minLength: [6, "Minimum length of password must be 6 characters long"],
   },
+});
+
+//Mongoose Hooks
+//function fire before the user stored in the database
+userSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 const User = mongoose.model("user", userSchema);
