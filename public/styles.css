@@ -75,6 +75,7 @@ input {
   border: 1px solid #ddd;
   font-size: 1em;
   width: 100%;
+  outline: none;
 }
 label {
   display: block;
@@ -82,15 +83,17 @@ label {
 }
 button {
   margin-top: 30px;
-  border-radius: 36px;
+  border-radius: 5px;
   background: #fee996;
-  border: 0;
+  border: none;
+  outline: none;
   text-transform: uppercase;
   font-weight: 700;
   font-size: 0.8em;
   display: block;
   padding: 10px 16px;
   letter-spacing: 2px;
+  cursor: pointer;
 }
 .error {
   color: #ff0099;
