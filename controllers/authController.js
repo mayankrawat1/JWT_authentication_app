@@ -28,8 +28,8 @@ module.exports.login_get = (req, res) => {
 };
 
 module.exports.signup_post = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
     const user = await User.create({ email, password });
     res.status(200).send(user);
   } catch (err) {
