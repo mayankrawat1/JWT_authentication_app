@@ -14,7 +14,7 @@ app.set("view engine", "ejs");
 require("./database/connection");
 
 app.get("/", (req, res) => res.render("home"));
-app.get("/smoothies", (req, res) => res.render("smoothies"));
+app.get("/icecreams", (req, res) => res.render("icecream"));
 
 app.listen(PORT, () => {
   console.log(`listening to the port ${PORT}`);
