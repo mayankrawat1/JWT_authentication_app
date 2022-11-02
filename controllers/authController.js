@@ -77,3 +77,8 @@ module.exports.login_post = async (req, res) => {
     res.status(400).json({ error });
   }
 };
+
+module.exports.logout = (req, res) => {
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.redirect("/");
+};
