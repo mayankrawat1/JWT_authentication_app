@@ -1,7 +1,19 @@
+require("dotenv").config();
 const User = require("../database/models/userModel");
+const jwt = require("jsonwebtoken");
 
 const handleErrors = (err) => {
   let errors = { email: "", password: "" };
+
+  //Login email error
+  if (err.message === "Incorrect email") {
+    errors.email = "That email is not registered";
+  }
+
+  //Login email error
+  if (err.message === "Incorrect password") {
+    errors.password = "Password not match";
+  }
 
   //duplicate email error
   if (err.code === 11000) {
@@ -19,6 +31,12 @@ const handleErrors = (err) => {
   return errors;
 };
 
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: 3 * 60 * 60 * 24,
+  });
+};
+
 module.exports.signup_get = (req, res) => {
   res.render("signup");
 };
@@ -31,14 +49,31 @@ module.exports.signup_post = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.create({ email, password });
-    res.status(200).send(user);
+    const token = createToken(user._id);
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 3 * 1000 * 60 * 60 * 24,
+    });
+    res.status(200).send({ user: user._id });
+  } catch (err) {
+    const error = handleErrors(err);
+    res.status(400).json({ error });
+    return;
+  }
+};
+
+module.exports.login_post = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.login(email, password);
+    const token = createToken(user._id);
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 3 * 1000 * 60 * 60 * 24,
+    });
+    res.status(200).json({ user: user._id });
   } catch (err) {
     const error = handleErrors(err);
     res.status(400).json({ error });
   }
-  res.send("signup");
-};
-
-module.exports.login_post = (req, res) => {
-  res.send("login");
 };
