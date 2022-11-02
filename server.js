@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./router/authRoutes");
-const { authentication } = require("./middleware/authMiddleware");
+const { authentication, checkUser } = require("./middleware/authMiddleware");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -18,6 +18,8 @@ app.set("view engine", "ejs");
 //datbasse connection
 require("./database/connection");
 
+//routes
+app.get("*", checkUser);
 app.get("/", (req, res) => res.render("home"));
 app.get("/icecreams", authentication, (req, res) => res.render("icecream"));
 
